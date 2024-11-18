@@ -1,3 +1,3 @@
-# dashboard_ipi
+# DASHBOARD IPI SÃO MANUEL
 
-A new Flutter project.
+Projeto para controle de participantes de um evento.
