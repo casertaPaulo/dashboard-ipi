@@ -16,6 +16,9 @@ class DashboardController extends GetxController {
   var reativeData = <String, dynamic>{}.obs;
   var alreadyConfirmed = false.obs;
 
+  var isSearching = false.obs;
+  var isSubmiting = false.obs;
+
   var confirmados = 0.obs;
 
   @override
@@ -40,6 +43,7 @@ class DashboardController extends GetxController {
 
   void handleSearch() async {
     if (formKey.currentState!.validate()) {
+      isSearching(true);
       try {
         String cpf = Util.cleanText(textFieldController.value.value.text);
         alreadyConfirmed(false);
@@ -52,11 +56,14 @@ class DashboardController extends GetxController {
         reativeData(data);
       } catch (e) {
         Util.errorSnackbar(e.toString());
+      } finally {
+        isSearching(false);
       }
     }
   }
 
   void handleConfirmation() async {
+    isSubmiting(true);
     try {
       await databaseService.confirm(
         Util.cleanText(textFieldController.value.text),
@@ -68,6 +75,8 @@ class DashboardController extends GetxController {
       cleanData();
     } catch (e) {
       Util.errorSnackbar(e.toString());
+    } finally {
+      isSubmiting(false);
     }
   }
 

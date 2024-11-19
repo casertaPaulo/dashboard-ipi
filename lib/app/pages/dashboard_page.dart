@@ -91,6 +91,9 @@ class DashboardPage extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * .65,
                       child: TextFormField(
                         controller: controller.textFieldController.value,
+                        onFieldSubmitted: (value) {
+                          controller.handleSearch();
+                        },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Insira o CPF!";
@@ -134,6 +137,10 @@ class DashboardPage extends StatelessWidget {
               Obx(
                 () {
                   final isEmpty = controller.reativeData.isEmpty;
+                  bool confirmed = controller.alreadyConfirmed.value;
+                  if (controller.isSearching.value) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
                   if (!isEmpty) {
                     return Column(
                       children: [
@@ -165,48 +172,41 @@ class DashboardPage extends StatelessWidget {
                             context,
                           ),
                         ),
-                        Obx(
-                          () {
-                            bool confirmed = controller.alreadyConfirmed.value;
-                            return OutlinedButton(
-                              onPressed: () {},
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: 'STATUS:  ',
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: "ROBOTOCONDENSED",
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: confirmed
-                                          ? "CONFIRMADO"
-                                          : "NÃO CONFIRMADO",
-                                      style: TextStyle(
-                                        fontFamily: "ROBOTOCONDENSED",
-                                        color: confirmed
-                                            ? Colors.green[600]
-                                            : Colors.orange,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                        OutlinedButton(
+                          onPressed: () {},
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontWeight: FontWeight.w900,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
-                            );
-                          },
-                        )
+                              children: [
+                                TextSpan(
+                                  text: 'STATUS:  ',
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "ROBOTOCONDENSED",
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: confirmed
+                                      ? "CONFIRMADO"
+                                      : "NÃO CONFIRMADO",
+                                  style: TextStyle(
+                                    fontFamily: "ROBOTOCONDENSED",
+                                    color: confirmed
+                                        ? Colors.green[600]
+                                        : Colors.orange,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     );
                   }
@@ -252,25 +252,37 @@ class DashboardPage extends StatelessWidget {
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.all(15),
                           ),
-                          onPressed:
-                              hasData && !controller.alreadyConfirmed.value
-                                  ? () {
-                                      controller.handleConfirmation();
-                                    }
-                                  : null,
+                          onPressed: hasData &&
+                                  !controller.alreadyConfirmed.value &&
+                                  !controller.isSearching.value
+                              ? () {
+                                  controller.handleConfirmation();
+                                }
+                              : null,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              if (hasData)
-                                const FittedBox(
-                                  child: Text(
-                                    "CONFIRMAR PRESENÇA",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w900,
+                              if (controller.isSubmiting.value)
+                                const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              else if (hasData)
+                                const Row(
+                                  children: [
+                                    FittedBox(
+                                      child: Text(
+                                        "CONFIRMAR PRESENÇA",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              const Icon(Icons.check)
+                                    SizedBox(width: 20),
+                                    Icon(Icons.check)
+                                  ],
+                                )
+                              else
+                                const Icon(Icons.check),
                             ],
                           ),
                         ),
