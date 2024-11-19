@@ -1,4 +1,5 @@
 import 'package:dashboard_ipi/app/service/firebase_service.dart';
+import 'package:dashboard_ipi/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
@@ -12,33 +13,66 @@ class DashboardController extends GetxController {
   FirebaseService databaseService = Get.find();
 
   // Variáveis reativas
-  var nome = ''.obs;
-  var telefone = 0.obs;
-  var item = ''.obs;
+  var reativeData = <String, dynamic>{}.obs;
+  var alreadyConfirmed = false.obs;
 
-  void handleSubmit() async {
+  var confirmados = 0.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    databaseService.listenDocs();
+
+    // Atualiza localmente, se necessário
+    ever<int>(databaseService.confirmadosCount, (count) {
+      confirmados.value = count;
+    });
+
+    // Escuta alterações no Texto do TextEditingController
+    textFieldController.value.addListener(() {
+      String cpf = Util.cleanText(textFieldController.value.text);
+      if (cpf.isEmpty || cpf.length < 14) {
+        reativeData({}); // Limpa dados se CPF for apagado ou incompleto
+        alreadyConfirmed(false); // Reseta confirmação
+      }
+    });
+  }
+
+  void handleSearch() async {
     if (formKey.currentState!.validate()) {
       try {
+        String cpf = Util.cleanText(textFieldController.value.value.text);
+        alreadyConfirmed(false);
         Map<String, dynamic> data = await databaseService.findUser(
-          documentId: _cleanText(textFieldController.value.value.text),
+          documentId: cpf,
         );
-        nome(data['nome']);
-        telefone(data['telefone']);
-        item(data['item']);
+        if (await databaseService.alreadyConfirmed(documentId: cpf)) {
+          alreadyConfirmed(true);
+        }
+        reativeData(data);
       } catch (e) {
-        Get.snackbar("Erro", e.toString());
+        Util.errorSnackbar(e.toString());
       }
     }
   }
 
-  void cleanData() {
-    nome("");
-    telefone(0);
-    item('');
-    textFieldController.value.text = '';
+  void handleConfirmation() async {
+    try {
+      await databaseService.confirm(
+        Util.cleanText(textFieldController.value.text),
+        reativeData,
+      );
+      Util.successSnackbar(
+        const Icon(Icons.check_circle),
+      );
+      cleanData();
+    } catch (e) {
+      Util.errorSnackbar(e.toString());
+    }
   }
 
-  String _cleanText(String text) {
-    return text.replaceAll(RegExp(r'[^0-9]'), '');
+  void cleanData() {
+    reativeData({});
+    textFieldController.value.text = '';
   }
 }
