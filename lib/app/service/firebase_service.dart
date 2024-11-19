@@ -43,6 +43,7 @@ class FirebaseService extends GetxService {
         'nome': data['nome'],
         'telefone': data['telefone'],
         'item': data['item'],
+        'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       throw e.toString();
