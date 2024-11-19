@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -51,7 +48,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCaCVigzwVRuDy6pU6lrfex6gyAY8Tg9BM',
-    appId: '1:1035260998061:android:bd2c8a6cd6d95e230b7124',
+    appId: '1:1035260998061:android:1e2945d1078dfc4a0b7124',
     messagingSenderId: '1035260998061',
     projectId: 'event-form-fb9eb',
     databaseURL: 'https://event-form-fb9eb-default-rtdb.firebaseio.com',
@@ -66,6 +63,16 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://event-form-fb9eb-default-rtdb.firebaseio.com',
     storageBucket: 'event-form-fb9eb.firebasestorage.app',
     iosBundleId: 'com.teste.dashboardIpi',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBaWE-xLtEv0tg1yevLxM-aqGvuFRKOcu8',
+    appId: '1:1035260998061:web:b7e4669c3c1c04850b7124',
+    messagingSenderId: '1035260998061',
+    projectId: 'event-form-fb9eb',
+    authDomain: 'event-form-fb9eb.firebaseapp.com',
+    databaseURL: 'https://event-form-fb9eb-default-rtdb.firebaseio.com',
+    storageBucket: 'event-form-fb9eb.firebasestorage.app',
   );
 
 }

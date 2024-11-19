@@ -29,6 +29,25 @@
       "client_info": {
         "mobilesdk_app_id": "1:1035260998061:android:bd2c8a6cd6d95e230b7124",
         "android_client_info": {
+          "package_name": "com.teste.dashbo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCaCVigzwVRuDy6pU6lrfex6gyAY8Tg9BM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035260998061:android:1e2945d1078dfc4a0b7124",
+        "android_client_info": {
           "package_name": "com.teste.dashboard_ipi"
         }
       },
