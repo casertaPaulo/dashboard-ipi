@@ -1,5 +1,6 @@
 import 'package:dashboard_ipi/app/controller/dashboard_controller.dart';
 import 'package:dashboard_ipi/app/pages/dashboard_page.dart';
+import 'package:dashboard_ipi/app/pages/responsive_layout.dart';
 import 'package:dashboard_ipi/app/service/firebase_service.dart';
 import 'package:dashboard_ipi/firebase_options.dart';
 import 'package:dashboard_ipi/theme.dart';
@@ -37,7 +38,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: theme.dark(),
-      home: const DashboardPage(),
+      home: const ResponsiveLayout(),
     );
   }
 }

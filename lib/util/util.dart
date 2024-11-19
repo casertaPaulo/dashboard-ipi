@@ -39,7 +39,10 @@ class Util {
       forwardAnimationCurve: Curves.fastEaseInToSlowEaseOut,
       snackPosition: SnackPosition.BOTTOM,
       duration: const Duration(seconds: 1),
-      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+      margin: EdgeInsets.symmetric(
+        horizontal: Get.size.width < 600 ? 30 : Get.size.width * .4,
+        vertical: 30,
+      ),
     );
   }
 
@@ -68,7 +71,10 @@ class Util {
       backgroundColor: Colors.red[600],
       forwardAnimationCurve: Curves.fastEaseInToSlowEaseOut,
       duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
+      margin: EdgeInsets.symmetric(
+        horizontal: Get.size.width < 600 ? 30 : Get.size.width * .3,
+        vertical: 30,
+      ),
     );
   }
 }
