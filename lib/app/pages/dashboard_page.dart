@@ -32,7 +32,7 @@ class DashboardPage extends StatelessWidget {
                         "DASHBOARD\nDE CONTROLE",
                         style: TextStyle(
                           fontWeight: FontWeight.w900,
-                          fontFamily: "LEMONMILD-BOLD",
+                          fontFamily: "LEMONMILK-BOLD",
                           color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
@@ -82,217 +82,211 @@ class DashboardPage extends StatelessWidget {
                 ],
               ),
               SizedBox(height: size.height * .05),
-              Form(
-                key: controller.formKey,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .65,
-                      child: TextFormField(
-                        controller: controller.textFieldController.value,
-                        onFieldSubmitted: (value) {
-                          controller.handleSearch();
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Insira o CPF!";
-                          }
-                          if (value.isEmpty) {
-                            return "Formato de CPF inválido!";
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.number,
-                        maxLength: 14,
-                        buildCounter: (
-                          context, {
-                          required currentLength,
-                          required isFocused,
-                          required maxLength,
-                        }) {
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.credit_card),
-                          labelText: "Número do CPF",
-                        ),
-                        onTapOutside: (event) {
-                          FocusScope.of(context).unfocus();
-                        },
-                      ),
-                    ),
-                    FloatingActionButton(
-                      onPressed: () {
-                        controller.handleSearch();
-                      },
-                      shape: const CircleBorder(),
-                      child: const Icon(Icons.search_rounded),
-                    ),
-                  ],
-                ),
-              ),
+              _buildFormHeader(context, controller),
               const SizedBox(height: 30),
-              Obx(
-                () {
-                  final isEmpty = controller.reativeData.isEmpty;
-                  bool confirmed = controller.alreadyConfirmed.value;
-                  if (controller.isSearching.value) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!isEmpty) {
-                    return Column(
-                      children: [
-                        FadeInUp(
-                          duration: 600,
-                          child: _buildCards(
-                            "NOME",
-                            Icons.person,
-                            controller.reativeData['nome'],
-                            context,
-                          ),
+              Obx(() {
+                final isEmpty = controller.reativeData.isEmpty;
+                final confirmed = controller.alreadyConfirmed.value;
+                if (controller.isSearching.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!isEmpty) {
+                  return Column(
+                    children: [
+                      FadeInUp(
+                        duration: 600,
+                        child: _buildCards(
+                          "NOME",
+                          Icons.person,
+                          controller.reativeData['nome'],
+                          context,
                         ),
-                        FadeInUp(
-                          duration: 1000,
-                          child: _buildCards(
-                            "TELEFONE",
-                            Icons.phone,
-                            Util.formatPhoneNumber(
-                                controller.reativeData['telefone']),
-                            context,
-                          ),
+                      ),
+                      FadeInUp(
+                        duration: 1000,
+                        child: _buildCards(
+                          "TELEFONE",
+                          Icons.phone,
+                          Util.formatPhoneNumber(
+                              controller.reativeData['telefone']),
+                          context,
                         ),
-                        FadeInUp(
-                          duration: 1400,
-                          child: _buildCards(
-                            "ITEM",
-                            Icons.food_bank_outlined,
-                            controller.reativeData['item'].toUpperCase(),
-                            context,
-                          ),
+                      ),
+                      FadeInUp(
+                        duration: 1400,
+                        child: _buildCards(
+                          "ITEM",
+                          Icons.food_bank_outlined,
+                          controller.reativeData['item'].toUpperCase(),
+                          context,
                         ),
-                        OutlinedButton(
-                          onPressed: () {},
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              style: TextStyle(
-                                fontWeight: FontWeight.w900,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: 'STATUS:  ',
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.onSurface,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: "ROBOTOCONDENSED",
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: confirmed
-                                      ? "CONFIRMADO"
-                                      : "NÃO CONFIRMADO",
-                                  style: TextStyle(
-                                    fontFamily: "ROBOTOCONDENSED",
-                                    color: confirmed
-                                        ? Colors.green[600]
-                                        : Colors.orange,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          color: Theme.of(context).colorScheme.primary,
-                          fontSize: 25,
-                          fontFamily: "ROBOTOCONDENSED"),
-                      children: const [
-                        TextSpan(
-                          text: 'INSIRA O NÚMERO\n',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        TextSpan(
-                          text: "DO DOCUMENTO\n",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(
-                          text: "E PESQUISE",
-                        ),
-                      ],
-                    ),
+                      ),
+                      _statusButton(context, confirmed)
+                    ],
                   );
-                },
-              ),
+                }
+                return RichText(
+                  text: TextSpan(
+                    style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 25,
+                        fontFamily: "ROBOTOCONDENSED"),
+                    children: const [
+                      TextSpan(
+                        text: 'INSIRA O NÚMERO\n',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      TextSpan(
+                        text: "DO DOCUMENTO\n",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: "E PESQUISE",
+                      ),
+                    ],
+                  ),
+                );
+              }),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Obx(
-                    () {
-                      bool hasData = controller.reativeData.isNotEmpty;
-
-                      return AnimatedContainer(
-                        duration: const Duration(seconds: 1),
-                        curve: Curves.fastEaseInToSlowEaseOut,
-                        width: Util.width(context),
-                        height: Util.height(context) * .08,
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.all(15),
-                          ),
-                          onPressed: hasData &&
-                                  !controller.alreadyConfirmed.value &&
-                                  !controller.isSearching.value
-                              ? () {
-                                  controller.handleConfirmation();
-                                }
-                              : null,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (controller.isSubmiting.value)
-                                const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              else if (hasData)
-                                const Row(
-                                  children: [
-                                    FittedBox(
-                                      child: Text(
-                                        "CONFIRMAR PRESENÇA",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                        ),
+                  child: Obx(() {
+                    bool hasData = controller.reativeData.isNotEmpty;
+                    final bool canHandle = hasData &&
+                        !controller.alreadyConfirmed.value &&
+                        !controller.isSearching.value;
+                    return SizedBox(
+                      height: Util.height(context) * .08,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.all(15),
+                        ),
+                        onPressed:
+                            canHandle ? controller.handleConfirmation : null,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (controller.isSubmiting.value)
+                              const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            else if (hasData)
+                              const Row(
+                                children: [
+                                  FittedBox(
+                                    child: Text(
+                                      "CONFIRMAR PRESENÇA",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w900,
                                       ),
                                     ),
-                                    SizedBox(width: 20),
-                                    Icon(Icons.check)
-                                  ],
-                                )
-                              else
-                                const Icon(Icons.check),
-                            ],
-                          ),
+                                  ),
+                                  SizedBox(width: 20),
+                                  Icon(Icons.check)
+                                ],
+                              )
+                            else
+                              const Icon(Icons.check),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormHeader(
+      BuildContext context, DashboardController controller) {
+    return Form(
+      key: controller.formKey,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .65,
+            child: TextFormField(
+              controller: controller.textFieldController.value,
+              onFieldSubmitted: (value) {
+                controller.handleSearch();
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Insira o CPF!";
+                }
+                if (value.isEmpty) {
+                  return "Formato de CPF inválido!";
+                }
+                return null;
+              },
+              keyboardType: TextInputType.number,
+              maxLength: 14,
+              buildCounter: (
+                context, {
+                required currentLength,
+                required isFocused,
+                required maxLength,
+              }) {
+                return null;
+              },
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.credit_card),
+                labelText: "Número do CPF",
+              ),
+              onTapOutside: (event) {
+                FocusScope.of(context).unfocus();
+              },
+            ),
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              controller.handleSearch();
+            },
+            shape: const CircleBorder(),
+            child: const Icon(Icons.search_rounded),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _statusButton(BuildContext context, bool confirmed) {
+    return OutlinedButton(
+      onPressed: () {},
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          children: [
+            TextSpan(
+              text: 'STATUS:  ',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+                fontFamily: "ROBOTOCONDENSED",
+              ),
+            ),
+            TextSpan(
+              text: confirmed ? "CONFIRMADO" : "NÃO CONFIRMADO",
+              style: TextStyle(
+                fontFamily: "ROBOTOCONDENSED",
+                color: confirmed ? Colors.green[600] : Colors.orange,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
       ),
     );

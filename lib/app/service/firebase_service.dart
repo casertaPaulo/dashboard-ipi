@@ -22,7 +22,7 @@ class FirebaseService extends GetxService {
     try {
       var doc = await participantsRef.doc(documentId).get();
       if (!doc.exists) {
-        throw "CPF NÃO CADASTRADO.";
+        throw "CPF NÃO CADASTRADO";
       }
       return doc.data() as Map<String, dynamic>;
     } catch (e) {
@@ -33,7 +33,7 @@ class FirebaseService extends GetxService {
   Future<void> confirm(String documentId, Map<String, dynamic> data) async {
     try {
       if (data.isEmpty) {
-        throw "PESQUISE UM CPF PRIMEIRO!";
+        throw "PESQUISE UM CPF PRIMEIRO";
       }
       var doc = await confirmadosRef.doc(documentId).get();
       if (doc.exists) {
