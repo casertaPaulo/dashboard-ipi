@@ -12,9 +12,18 @@ dependencies:
   firebase_database: ^11.1.6
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.1
   flutter_masked_text2: ^0.9.1
   get: ^4.6.6
   google_fonts: ^6.2.1
+
+flutter_icons:
+  image_path: "assets/icon/icon.png"
+  ios: true
+  remove_alpha_ios: true
+  android: "launcher_icon"
+  adaptive_icon_background: "#000000"
+  adaptive_icon_foreground: "assets/icon/icon.png"
 
 dev_dependencies:
   flutter_test:

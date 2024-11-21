@@ -67,7 +67,7 @@ class DashboardPage extends StatelessWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: "/ 407",
+                                text: "/ 450",
                                 style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.onSurface,

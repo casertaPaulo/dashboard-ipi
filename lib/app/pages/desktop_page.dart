@@ -310,7 +310,7 @@ class DesktopPage extends StatelessWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: "/ 399",
+                                text: "/ 450",
                                 style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.onSurface,
