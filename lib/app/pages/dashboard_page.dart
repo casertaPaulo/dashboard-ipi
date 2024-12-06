@@ -10,146 +10,21 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DashboardController controller = Get.find();
-    Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: size.width * .08,
-            vertical: size.height * .03,
+            horizontal: Get.width * .08,
+            vertical: Get.height * .03,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    width: size.width * .4,
-                    child: FittedBox(
-                      child: Text(
-                        "DASHBOARD\nDE CONTROLE",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          fontFamily: "LEMONMILK-BOLD",
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: size.width * .3,
-                    child: FittedBox(
-                      child: Obx(() {
-                        return RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: 'PARTICIPANTES\nPRESENTES\n',
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "ROBOTOCONDENSED",
-                                ),
-                              ),
-                              TextSpan(
-                                text: "${controller.confirmados} ",
-                                style: TextStyle(
-                                  color: Colors.green[600],
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              TextSpan(
-                                text: "/ 450",
-                                style: TextStyle(
-                                  color:
-                                      Theme.of(context).colorScheme.onSurface,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: size.height * .05),
+              _buildPageHeader(controller),
+              _buildButtonAlterarVagas(controller),
               _buildFormHeader(context, controller),
-              const SizedBox(height: 30),
-              Obx(() {
-                final isEmpty = controller.reativeData.isEmpty;
-                final confirmed = controller.alreadyConfirmed.value;
-                if (controller.isSearching.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (!isEmpty) {
-                  return Column(
-                    children: [
-                      FadeInUp(
-                        duration: 600,
-                        child: _buildCards(
-                          "NOME",
-                          Icons.person,
-                          controller.reativeData['nome'],
-                          context,
-                        ),
-                      ),
-                      FadeInUp(
-                        duration: 1000,
-                        child: _buildCards(
-                          "TELEFONE",
-                          Icons.phone,
-                          Util.formatPhoneNumber(
-                              controller.reativeData['telefone']),
-                          context,
-                        ),
-                      ),
-                      FadeInUp(
-                        duration: 1400,
-                        child: _buildCards(
-                          "ITEM",
-                          Icons.food_bank_outlined,
-                          controller.reativeData['item'].toUpperCase(),
-                          context,
-                        ),
-                      ),
-                      _statusButton(context, confirmed)
-                    ],
-                  );
-                }
-                return RichText(
-                  text: TextSpan(
-                    style: TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 25,
-                        fontFamily: "ROBOTOCONDENSED"),
-                    children: const [
-                      TextSpan(
-                        text: 'INSIRA O NÚMERO\n',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      TextSpan(
-                        text: "DO DOCUMENTO\n",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: "E PESQUISE",
-                      ),
-                    ],
-                  ),
-                );
-              }),
+              const SizedBox(height: 20),
+              _buildBodyReturn(controller),
               Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -204,6 +79,67 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  Widget _buildPageHeader(DashboardController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SizedBox(
+          width: Get.width * .4,
+          child: FittedBox(
+            child: Text(
+              "DASHBOARD\nDE CONTROLE",
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontFamily: "LEMONMILK-BOLD",
+                color: Get.theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: Get.width * .3,
+          child: FittedBox(
+            child: Obx(() {
+              return RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: Get.theme.colorScheme.primary,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: 'PARTICIPANTES\nPRESENTES\n',
+                      style: TextStyle(
+                        color: Get.theme.colorScheme.onSurface,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "ROBOTOCONDENSED",
+                      ),
+                    ),
+                    TextSpan(
+                      text: "${controller.confirmados} ",
+                      style: TextStyle(
+                        color: Colors.green[600],
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    TextSpan(
+                      text: "/ ${controller.participants}",
+                      style: TextStyle(
+                        color: Get.theme.colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildFormHeader(
       BuildContext context, DashboardController controller) {
     return Form(
@@ -214,6 +150,8 @@ class DashboardPage extends StatelessWidget {
           SizedBox(
             width: MediaQuery.of(context).size.width * .65,
             child: TextFormField(
+              autofocus: false,
+              canRequestFocus: false,
               controller: controller.textFieldController.value,
               onFieldSubmitted: (value) {
                 controller.handleSearch();
@@ -259,7 +197,90 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _statusButton(BuildContext context, bool confirmed) {
+  Widget _buildButtonAlterarVagas(DashboardController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: SizedBox(
+        height: Get.height * .06,
+        width: double.infinity,
+        child: OutlinedButton(
+          onPressed: () {
+            controller.showMyDialog();
+          },
+          child: const Text("ALTERAR NÚMERO DE VAGAS"),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBodyReturn(DashboardController controller) {
+    return Obx(() {
+      final hasData = controller.reativeData.isNotEmpty;
+      final confirmed = controller.alreadyConfirmed.value;
+      final isLoading = controller.isSearching.value;
+      // Retornando os estados
+      if (isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (hasData) {
+        return Column(
+          children: [
+            FadeInUp(
+              duration: 600,
+              child: _buildCards(
+                "NOME",
+                Icons.person,
+                controller.reativeData['nome'],
+              ),
+            ),
+            FadeInUp(
+              duration: 1000,
+              child: _buildCards(
+                "TELEFONE",
+                Icons.phone,
+                Util.formatPhoneNumber(controller.reativeData['telefone']),
+              ),
+            ),
+            FadeInUp(
+              duration: 1400,
+              child: _buildCards(
+                "ITEM",
+                Icons.food_bank_outlined,
+                controller.reativeData['item'].toUpperCase(),
+              ),
+            ),
+            _statusButton(confirmed)
+          ],
+        );
+      }
+      return RichText(
+        text: TextSpan(
+          style: TextStyle(
+              fontWeight: FontWeight.w900,
+              color: Get.theme.colorScheme.primary,
+              fontSize: 25,
+              fontFamily: "ROBOTOCONDENSED"),
+          children: const [
+            TextSpan(
+              text: 'INSIRA O NÚMERO\n',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(
+              text: "DO DOCUMENTO\n",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            TextSpan(
+              text: "E PESQUISE",
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget _statusButton(bool confirmed) {
     return OutlinedButton(
       onPressed: () {},
       child: RichText(
@@ -267,13 +288,13 @@ class DashboardPage extends StatelessWidget {
         text: TextSpan(
           style: TextStyle(
             fontWeight: FontWeight.w900,
-            color: Theme.of(context).colorScheme.primary,
+            color: Get.theme.colorScheme.primary,
           ),
           children: [
             TextSpan(
               text: 'STATUS:  ',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface,
+                color: Get.theme.colorScheme.onSurface,
                 fontWeight: FontWeight.bold,
                 fontFamily: "ROBOTOCONDENSED",
               ),
@@ -292,26 +313,19 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCards(
-    String nome,
-    IconData icon,
-    String data,
-    BuildContext context,
-  ) {
+  Widget _buildCards(String nome, IconData icon, String data) {
     DashboardController controller = Get.find();
     bool isEmpty = controller.reativeData.isEmpty;
     return Card(
         child: Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: Util.width(context) * .05,
-        vertical: Util.height(context) * .020,
+        horizontal: Get.width * .05,
+        vertical: Get.height * .020,
       ),
       child: Row(
-        mainAxisAlignment:
-            isEmpty ? MainAxisAlignment.start : MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Icon(icon),
-          !isEmpty ? const SizedBox() : const SizedBox(width: 15),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -326,7 +340,7 @@ class DashboardPage extends StatelessWidget {
               !isEmpty ? const SizedBox(height: 10) : const SizedBox(),
               if (!isEmpty)
                 SizedBox(
-                  width: Util.width(context) * .6,
+                  width: Get.width * .6,
                   child: Text(
                     data,
                     style: const TextStyle(
