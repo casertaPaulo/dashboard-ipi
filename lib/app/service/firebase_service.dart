@@ -56,7 +56,6 @@ class FirebaseService extends GetxService {
       await _confirmadosRef.doc(documentId).set({
         'nome': data['nome'],
         'telefone': data['telefone'],
-        'item': data['item'],
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
@@ -64,11 +63,32 @@ class FirebaseService extends GetxService {
     }
   }
 
-  // Atualiza o número de vagas restantes
-  Future<void> updateVagas(int quantidade) async {
+  // Abre mais vagas no evento
+  Future<void> abrirVagas(int quantidade) async {
     await _rdRef.runTransaction((vagasRestantes) {
       return rtdb.Transaction.success((vagasRestantes as int) + quantidade);
     });
+  }
+
+  // Fechar vagas no evento
+  Future<void> fecharVagas(int quantidade) async {
+    try {
+      var result = await _rdRef.runTransaction((vagasRestantes) {
+        if (quantidade > (vagasRestantes as int) || vagasRestantes == 0) {
+          // Retorna um valor especial para sinalizar erro
+          return rtdb.Transaction.abort();
+        } else {
+          return rtdb.Transaction.success(vagasRestantes - quantidade);
+        }
+      });
+      // Caso a transação não tenha sido um sucesso, é lançado a exceção
+      if (!result.committed) {
+        throw "QUANTIDADE MAIOR QUE VAGAS RESTANTES";
+      }
+    } catch (e) {
+      // Captura a exceção e a lança para o controlador do botão
+      throw e.toString();
+    }
   }
 
   // Inicializa o escutador no nó de vagas restantes do Realtime Database

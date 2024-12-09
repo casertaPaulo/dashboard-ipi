@@ -77,4 +77,9 @@ class Util {
       ),
     );
   }
+
+  static closeDialog(BuildContext context) {
+    Navigator.of(context).pop();
+    FocusScope.of(context).unfocus();
+  }
 }

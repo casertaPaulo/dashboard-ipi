@@ -1,5 +1,6 @@
 import 'package:dashboard_ipi/animation/fade_animation.dart';
 import 'package:dashboard_ipi/app/controller/dashboard_controller.dart';
+import 'package:dashboard_ipi/app/controller/dialog_controller.dart';
 import 'package:dashboard_ipi/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,7 +22,7 @@ class DashboardPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildPageHeader(controller),
-              _buildButtonAlterarVagas(controller),
+              _buildButtonAlterarVagas(context),
               _buildFormHeader(context, controller),
               const SizedBox(height: 20),
               _buildBodyReturn(controller),
@@ -151,7 +152,6 @@ class DashboardPage extends StatelessWidget {
             width: MediaQuery.of(context).size.width * .65,
             child: TextFormField(
               autofocus: false,
-              canRequestFocus: false,
               controller: controller.textFieldController.value,
               onFieldSubmitted: (value) {
                 controller.handleSearch();
@@ -197,18 +197,52 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildButtonAlterarVagas(DashboardController controller) {
+  Widget _buildButtonAlterarVagas(BuildContext context) {
+    DialogController dialogController = Get.find();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
-      child: SizedBox(
-        height: Get.height * .06,
-        width: double.infinity,
-        child: OutlinedButton(
-          onPressed: () {
-            controller.showMyDialog();
-          },
-          child: const Text("ALTERAR NÚMERO DE VAGAS"),
-        ),
+      child: Row(
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: Get.height * .06,
+              child: OutlinedButton(
+                onPressed: () {
+                  dialogController.abrirVagaDialog(context);
+                },
+                child: SizedBox(
+                  width: Get.width * .25,
+                  child: const FittedBox(
+                    child: Text(
+                      "ABRIR VAGAS",
+                      style: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: SizedBox(
+              height: Get.height * .06,
+              child: OutlinedButton(
+                onPressed: () {
+                  dialogController.fecharVagaDialog(context);
+                },
+                child: SizedBox(
+                  width: Get.width * .3,
+                  child: const FittedBox(
+                    child: Text(
+                      "FECHAR VAGAS",
+                      style: TextStyle(color: Colors.redAccent),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -244,9 +278,9 @@ class DashboardPage extends StatelessWidget {
             FadeInUp(
               duration: 1400,
               child: _buildCards(
-                "ITEM",
-                Icons.food_bank_outlined,
-                controller.reativeData['item'].toUpperCase(),
+                "DATA DE INSCRIÇÃO",
+                Icons.date_range,
+                controller.reativeData['createdAt'].toUpperCase(),
               ),
             ),
             _statusButton(confirmed)

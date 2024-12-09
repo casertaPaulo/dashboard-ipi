@@ -1,4 +1,5 @@
 import 'package:dashboard_ipi/app/controller/dashboard_controller.dart';
+import 'package:dashboard_ipi/app/controller/dialog_controller.dart';
 import 'package:dashboard_ipi/app/pages/responsive_layout.dart';
 import 'package:dashboard_ipi/app/service/firebase_service.dart';
 import 'package:dashboard_ipi/firebase_options.dart';
@@ -15,6 +16,7 @@ void main() async {
   );
   Get.put(FirebaseService());
   Get.put(DashboardController());
+  Get.put(DialogController());
   runApp(const MainApp());
 }
 
